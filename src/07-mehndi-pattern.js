@@ -52,22 +52,74 @@
  *   isPalindrome("madam")     // => true
  *   generatePattern(3)        // => ["*", "**", "***", "**", "*"]
  */
-export function repeatChar(char, n) {
-  // Your code here
+export function repeatChar( char, n ) {
+  if ( typeof char !== "string" || char === "" || n <= 0 ) {
+    return "";
+  }
+  return char + repeatChar( char, n - 1 );
 }
 
-export function sumNestedArray(arr) {
-  // Your code here
+export function sumNestedArray( arr ) {
+  if ( !Array.isArray( arr ) ) return 0;
+  if ( arr.length === 0 ) return 0;
+
+  const [ first, ...rest ] = arr;
+  let sum = 0;
+
+  if ( Array.isArray( first ) ) {
+    sum = sumNestedArray( first );
+  } else if ( typeof first === "number" && !Number.isNaN( first ) ) {
+    sum = first;
+  }
+
+  return sum + sumNestedArray( rest );
 }
 
-export function flattenArray(arr) {
-  // Your code here
+export function flattenArray( arr ) {
+  if ( !Array.isArray( arr ) ) return [];
+  if ( arr.length === 0 ) return [];
+
+  const [ first, ...rest ] = arr;
+  let currentFlattened = [];
+
+  if ( Array.isArray( first ) ) {
+    currentFlattened = flattenArray( first );
+  } else {
+    currentFlattened = [ first ];
+  }
+
+  return [ ...currentFlattened, ...flattenArray( rest ) ];
 }
 
-export function isPalindrome(str) {
-  // Your code here
+export function isPalindrome( str ) {
+  if ( typeof str !== "string" ) return false;
+
+  const cleanStr = str.toLowerCase();
+
+  if ( cleanStr.length <= 1 ) return true;
+
+  if ( cleanStr[ 0 ] !== cleanStr[ cleanStr.length - 1 ] ) {
+    return false;
+  }
+
+  return isPalindrome( cleanStr.substring( 1, cleanStr.length - 1 ) );
 }
 
-export function generatePattern(n) {
-  // Your code here
+export function generatePattern( n ) {
+ if (typeof n !== "number" || n <= 0 || !Number.isInteger(n)) {
+    return [];
+  }
+
+  const buildPattern = (current) => {
+    if (current === n) {
+      return [repeatChar("*", current)];
+    }
+    
+    const stars = repeatChar("*", current);
+    const middlePart = buildPattern(current + 1);
+    
+    return [stars, ...middlePart, stars];
+  };
+
+  return buildPattern(1);
 }
